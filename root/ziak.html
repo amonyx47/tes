@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <!-- width to all devices and initial scale to "no zoom" -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="fonts/bowlby.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="frameworks/bootstrap3/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="frameworks/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <title>Žiacky mód</title>
+
+    <style>
+      a:link, a:visited {
+        background-color: #ffe7af;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        margin: 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        width: 150px;
+      }
+
+      a:hover, a:active {
+          background-color: #ffc43d;
+      }
+
+      body {
+        background-color: lightcyan;
+        text-align: center;
+      }
+</style>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+      var tests = [];
+      $.ajax({
+          url: '/tests',
+          type: 'GET',
+          dataType: 'html',
+          success: function(data) {
+            console.log(data);
+              $(data).find('a').each(function () {
+                  if ($(this).attr('href') != '/') {
+                    tests.push(decodeURIComponent($(this).attr('href').replace(/%20/g, " ")));
+                  }
+              });
+              console.log(tests);
+            var row = $("#testList");
+            for (var i = 0; i < tests.length; i++) {
+              var testLink = $('<a />', {
+                href: "ziak_test.html?name=" + tests[i].split('.')[0],
+                text: tests[i].split('.')[0],
+                id: tests[i]
+              });
+              row.append(testLink);
+            }
+          }
+      });
+    });
+</script>
+    <div class="container">
+        <div class="row">
+            <h1 class="col-lg-12 text-center nunito">Žiacky mód</h1>
+        </div>
+        <div class ="row" id="testList">
+        </div>
+    </div>
+</body>
+</html>

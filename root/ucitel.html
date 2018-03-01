@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <!-- width to all devices and initial scale to "no zoom" -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="fonts/bowlby.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="frameworks/bootstrap3/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="frameworks/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <title>Učiteľský mód</title>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('div').removeClass("ui-page-theme-a");
+            $('div').removeClass("ui-link");
+        }, 1);
+    });
+</script>
+    <div class="container" data-role="page">
+        <div class="row">
+        <h1 class="col-lg-12 text-center nunito"><a href="index.html">Učiteľský mód</a></h1>
+        </div>
+
+        <div class="row main-page-container ui-content" role="main">
+            <div class="col-lg-1 text-center"></div>
+            <div class="col-lg-3 text-center">
+                <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" href="zadanie.html">Vytvor zadanie</a>
+            </div>
+            <div class="col-lg-4 text-center">
+                <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" href="test.html">Vytvor test</a>
+            </div>
+            <div class="col-lg-3 text-center">
+                <a type="button" class="btn btn-lg btn-warning btn-block btn-huge nunito" href="file-upload/basic.html">Nahraj obrázky</a>
+            </div>
+            <div class="col-lg-1 text-center"></div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <!-- width to all devices and initial scale to "no zoom" -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="fonts/bowlby.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="frameworks/bootstrap3/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="frameworks/sprites/sprites.js"></script>
+    <script type="text/javascript" src="frameworks/jquery/jquery.js"></script>
+    <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <title>Vytvorenie zadania</title>
+
+</head>
+<body onresize="location.reload();">
+<script>
+    var imageList = [];
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('div').removeClass("ui-page-theme-a");
+        }, 1);
+
+        $.ajax({
+            url: '/images',
+            success: function(data) {
+                $(data).find('a').each(function () {
+                    if ($(this).attr('href') != '/') {
+                        imageList.push($(this).attr('href'));
+                    }
+                });
+                drawImages(imageList);
+            }
+        });
+    });
+</script>
+
+<script>
+
+    var obrazky = [];
+    var zadanie = [];
+
+    function onDragDrop(sprite) {
+        var over = sprite.findOverlapped(zadanie);
+        sprite.placeAt(over);
+    }
+
+    function drawImages(imageList) {
+        var y = 1;
+        var x = 0;
+        var canvasWidth = $("#canvas").width();
+        var perLine = Math.floor(canvasWidth/100)
+        var totalLines = Math.ceil(imageList.length/perLine) * 2;
+
+        document.getElementById("canvas").height = totalLines * 100;
+
+        for (var i = 0; i < imageList.length; i++) {
+            if ((100 + x * 100) > canvasWidth) {
+              y++;
+              x = 0;
+            }
+            obrazky[i] = new Sprite('images/' + imageList[i], 50 + x * 100, y * 100 - 50, dragSprite);
+            obrazky[i].kind = imageList[i];
+            x += 1;
+        }
+        y++;
+        x = 0;
+        console.log(y);
+        for (var i = 0; i < imageList.length; i++) {
+          if ((100 + x * 100) > canvasWidth) {
+            y++;
+            x = 0;
+          }
+          zadanie[i] = new Sprite('images/prazdne.png', 50 + x * 100, y * 100 - 50);
+          x += 1;
+        }
+    }
+
+    function textareaClick() {
+        document.getElementById("comment").setAttribute("innerText", "");
+    }
+
+</script>
+
+<div class="container" data-role="page">
+    <div class="row">
+        <h1 class="col-lg-12 text-center nunito"><a href="index.html">Vytvorenie zadania</a></h1>
+        <h2>Vytvorte zadanie</h2>
+            <p>Názov zadania: <input type="text" id="fileName"></p>
+            <p>Popis zadania: <br><textarea rows="4" cols="50" name="comment" id="comment"></textarea></p>
+            <form action="">
+                <input type="radio" name="typ" value="tahanie" id ="tahanie" checked /><label for="tahanie">&nbsp;ťahanie</label><br />
+                <input type="radio" name="typ" value="vymena" id="vymena" /><label for="vymena">&nbsp;výmena</label><br />
+                <input type="radio" name="typ" value="susedne" id="susedne" /><label for="susedne">&nbsp;výmena (len susedné)</label><br />
+            </form>
+            <div id="zadanie">
+                <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas>
+            </div>
+            <a class="btn btn-primary btn-success" href="#" onclick="saveAssignment(); return;">Ulož zadanie</a>
+            <a class="btn btn-primary" href="/ucitel.html">Späť</a>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="sk">
+<head>
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <meta charset="utf-8">
+    <title>Nahrávanie obrázkov</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../fonts/bowlby.css" />
+    <link rel="stylesheet" type="text/css" href="../fonts/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="../frameworks/bootstrap3/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../frameworks/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script src="js/vendor/jquery.ui.widget.js"></script>
+    <script src="js/jquery.iframe-transport.js"></script>
+    <script src="js/jquery.fileupload.js"></script>
+    <link rel="stylesheet" href="css/jquery.fileupload.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h1 class="col-lg-12 text-center nunito"><a href="../index.html">Nahrávanie obrázkov</a></h1>
+    </div>
+    <div class="row">
+        <blockquote>
+            <p>Kliknutím nižšie môžete vybrať obrázky, ktoré sa majú nahrať na server (môžete označiť aj viacero obrázkov naraz).</p>
+        </blockquote>
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Vyberte obrázky...</span>
+            <input id="fileupload" type="file" name="files[]" multiple>
+        </span>
+        <a class="btn btn-primary" href="/ucitel.html">Späť</a>
+        <br>
+        <br>
+        <p>Postup nahrávania</p>
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+        <div id="files" class="files"></div>
+        <br>
+
+    </div>
+</div>
+
+<script>
+$(function () {
+    'use strict';
+    var url = 'server/php/';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
+</body>
+</html>

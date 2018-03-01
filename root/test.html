@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="fonts/bowlby.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="frameworks/bootstrap3/css/bootstrap.min.css" />
+    <link href="css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="frameworks/jquery/jquery-1.11.1.min.js"></script>
+    <script src="frameworks/jquery/jquery.multi-select.js" type="text/javascript"></script>
+    <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <title>Vytvorenie testu</title>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('div').removeClass("ui-page-theme-a");
+        }, 1);
+    });
+</script>
+<div class="container" data-role="page">
+    <div class="row">
+        <h1 class="col-lg-12 text-center nunito"><a href="index.html">Vytvorenie testu</a></h1>
+    </div>
+    <div class="row ui-content" role="main">
+        <div class="col-lg-1 text-center"></div>
+        <div class="col-lg-3 text-center">
+        </div>
+        <div class="col-lg-4 text-center">
+            <select id='test' multiple='multiple'>
+            </select>
+            <br>
+            <p>
+                Názov testu:
+                <input type="text" id="fileName">
+            </p>
+            <a type="button" class="btn btn-success nunito" href="#" onclick="saveTest(); return;">Ulož test</a>
+            <a class="btn btn-primary" href="/ucitel.html">Späť</a>
+        </div>
+        <div class="col-lg-3 text-center">
+        </div>
+        <div class="col-lg-1 text-center">
+
+        </div>
+    </div>
+</div>
+<script>
+    var assignments = [];
+    $.ajax({
+        url: '/assignments',
+        success: function(data) {
+            $(data).find('a').each(function () {
+                if ($(this).attr('href') != '/') {
+                    assignments.push(decodeURIComponent($(this).attr('href').replace(/%20/g, " ")));
+                }
+            });
+            showSelect();
+        }
+    });
+</script>
+<script>
+    $('#test').multiSelect();
+
+    function showSelect() {
+        for (var i = 0; i < assignments.length; i++) {
+            $('#test').multiSelect('addOption', {value: assignments[i], text: assignments[i].split('.')[0], index: i});
+        }
+    }
+</script>
+</body>
+</html>
