@@ -93,8 +93,24 @@ function shuffle(array) {
 }
 
 function drawAssignment(test) {
-  currentAssignmentSolution = test.cards;
-  var randomIndexes = shuffle([...Array(test.cards.length).keys()])
+    console.log("test: " + test.cards);
+    console.log("test: " + test.name);
+    console.log("test: " + test.id);
+    console.log("test: " + test.text);
+
+  console.log("test: " + test);
+
+  currentAssignmentSolution = test.cards.slice();
+
+  console.log("length of arr: " + test.cards.length);
+
+  console.log(test.cards);
+
+  var randomIndexes = shuffle(test.cards);
+
+  console.log("current assignement solution: " + currentAssignmentSolution);
+
+  console.table(randomIndexes);
 
   var nav = $('<div />', {
     "id": "navigation",
@@ -163,7 +179,7 @@ function drawAssignment(test) {
       revert: true,
       scroll: false,
       stop: function(event, ui) {
-        var width = event.toElement.width
+        var width = event.target.width;
         if (Math.abs(ui.position.left - ui.originalPosition.left) > 2.35 * width) {
           rowCards.sortable("cancel");
         }
@@ -182,11 +198,14 @@ function drawAssignment(test) {
 
   for (var i = 0; i < randomIndexes.length; i++) {
 
+    console.log(test.cards);
+    console.log(test.cards[randomIndexes[i]]);
+
     var card = $('<img />', {
       "class": "col-lg-2 card",
-      "src": "images/" + test.cards[randomIndexes[i]],
-      "alt": test.cards[randomIndexes[i]],
-      "id": test.cards[randomIndexes[i]]
+      "src": "images/" + test.cards[i],
+      "alt": test.cards[i],
+      "id": test.cards[i]
     });
     if (test.type == 'drag') {
       card.draggable({
@@ -205,7 +224,7 @@ function drawAssignment(test) {
   }
   rowCards.append(cards);
   row.append(rowCards);
-  blanks = [];
+  var blanks = [];
   if (test.type == 'drag') {
     var rowBlanks = $('<div />', {
       "id": "rowBlanks",
@@ -213,8 +232,8 @@ function drawAssignment(test) {
     });
     rowBlanks.css({
       "height": "140px"
-    })
-    for (var i = 0; i < test.cards.length; i++) {
+    });
+    for (var j = 0; j < test.cards.length; j++) {
       var blankCard = $('<div />', {
         "class": "col-lg-2"
       });
@@ -275,7 +294,7 @@ function drawAssignment(test) {
 
 $.fn.exists = function() {
   return this.length !== 0;
-}
+};
 
 function arraysEqual(arr1, arr2) {
   if (arr1.length !== arr2.length)
@@ -286,7 +305,7 @@ function arraysEqual(arr1, arr2) {
   }
 
   return true;
-}
+};
 
 function checkSolution() {
   var proposedSolution = [];
@@ -304,12 +323,19 @@ function checkSolution() {
   } else {
     proposedSolution = $('#rowCards').sortable("toArray");
   }
-  if (arraysEqual(proposedSolution, currentAssignmentSolution)) {
+
+  console.log("proposed solution:")
+  console.log(proposedSolution);
+
+  console.log("current solution:")
+    console.log(currentAssignmentSolution);
+
+    if (arraysEqual(proposedSolution, currentAssignmentSolution)) {
     alert("Gratulujem, riešenie je správne!");
   } else {
     alert("Bohužiaľ, riešenie je nesprávne. Skús to znova.");
   }
-}
+};
 
 function saveAssignment() {
   var fileName = document.getElementById('fileName').value;
@@ -354,7 +380,7 @@ function saveAssignment() {
   saveToServer(result, fileName, 'assignments/');
   alert('Zadanie úspešne uložené');
   location.reload();
-}
+};
 
 function saveToServer(data, file, path) {
   $.post('save.php', {
@@ -362,7 +388,7 @@ function saveToServer(data, file, path) {
     fileName: file,
     path: path
   });
-}
+};
 
 function saveTest() {
   var fileName = document.getElementById('fileName').value;
@@ -388,4 +414,4 @@ function saveTest() {
   saveToServer(result, fileName, 'tests/');
   alert('Test úspešne uložený');
   location.reload();
-}
+};

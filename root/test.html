@@ -24,7 +24,7 @@
 </script>
 <div class="container" data-role="page">
     <div class="row">
-        <h1 class="col-lg-12 text-center nunito"><a href="index.html">Vytvorenie testu</a></h1>
+        <h1 class="col-lg-12 text-center nunito"><a href="index">Vytvorenie testu</a></h1>
     </div>
     <div class="row ui-content" role="main">
         <div class="col-lg-1 text-center"></div>
@@ -39,7 +39,7 @@
                 <input type="text" id="fileName">
             </p>
             <a type="button" class="btn btn-success nunito" href="#" onclick="saveTest(); return;">Ulož test</a>
-            <a class="btn btn-primary" href="/ucitel.html">Späť</a>
+            <a class="btn btn-primary" href="ucitel">Späť</a>
         </div>
         <div class="col-lg-3 text-center">
         </div>
@@ -51,10 +51,10 @@
 <script>
     var assignments = [];
     $.ajax({
-        url: '/assignments',
+        url: 'assignments',
         success: function(data) {
             $(data).find('a').each(function () {
-                if ($(this).attr('href') != '/') {
+                if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
                     assignments.push(decodeURIComponent($(this).attr('href').replace(/%20/g, " ")));
                 }
             });

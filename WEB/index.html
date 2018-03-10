@@ -110,14 +110,14 @@
     <hr class="">
 </div>
 <!--/container-->
-<div id="nastiahnutie" class="divider"></div>
+<div class="divider"></div>
 <section class="bg-2">
     <div class="col-sm-10 col-sm-offset-1 text-center">
-        <h1 class=""></h1>
+        <h1 id="nastiahnutie" class=""></h1>
 
     </div>
 </section>
-<div class="divider"></div>
+<div  class="divider"></div>
 <div class="container">
     <hr class="">
     <h1 class="text-center">Na stiahnutie</h1>
@@ -134,6 +134,12 @@
                 <li>
                     <h4><a href="root.zip">Zdrojové kódy k programu</a></h4>
                 </li>
+                <li>
+                    <h4><a href="USBWebserver.zip">Program (s usbwebserverom)</a></h4>
+                </li>
+                <li>
+                    <h4><a href="https://davinci.fmph.uniba.sk/~minarciny2/tvorba_edukacneho_softveru/index.html">Funkčny program (na školskom serveri davinci)</a></h4>
+                </li>
             </ul>
         </div>
         <div class="col-md-4">
@@ -142,7 +148,7 @@
     </div>
 </div>
 <!--/container-->
-<div id="harmonogram" class="divider">
+<div class="divider">
 
 </div>
 <!--parallax 2 -->
@@ -154,7 +160,7 @@
 <div class="divider"></div>
 <div class="container">
     <hr class="">
-    <h1 class="text-center">Harmonogram</h1>
+    <h1 id="harmonogram" class="text-center">Harmonogram</h1>
     <hr class="">
     <div class="row">
         <div class="col-md-4">
@@ -178,8 +184,23 @@
                     <h3 class="text-info">do 13.3.2018</h3>
 
                 </div>
-                <div class="panel-body text-info"></div>
-
+                <div class="panel-body text-success"></div>
+                <ul>
+                    <li>ukážka projektu</li>
+                    <li>nájsť vhodny server</li>
+                    <li>nakonfigurovať program na produkčné serverové prostredie namiesto localhostu, tzn.
+                    <ul>
+                        <li>opraviť ajax requesty</li>
+                        <li>opraviť relatívne cesty</li>
+                        <li>opraviť upload na server</li>
+                        <li>opravit načítavanie obrázkov</li>
+                        <li>úprava linkov so suffixom .html</li>
+                        <li>oprava kontrolovania riešenia testov</li>
+                        <li>oprava drag&drop pri typoch 'vymieñacích zadaní'</li>
+                        <li>oprava načítania 'prázdnych' kariet pri riešení zadania</li>
+                    </ul>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-md-4">
@@ -262,6 +283,15 @@
             carousel: true
         }
     );
+</script>
+
+<script>
+    $('ul.nav > li > a').click(function(){
+        $('html, body').animate({
+            scrollTop: $( $(this).attr('href') ).offset().top
+        }, 1000);
+        return false;
+    });
 </script>
 </body>
 </html>
