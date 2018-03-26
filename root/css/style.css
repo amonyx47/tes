@@ -29,3 +29,13 @@ body {
   background-color: lightcyan;
   font-family: Nunito;
 }
+
+.placeholder
+{
+    width: 90px;
+    height: 20px;
+    padding: 5px;
+    border: 1px solid #3e506c;
+    margin: 0 0 1px 0;
+    background-color: #8798b4;
+}

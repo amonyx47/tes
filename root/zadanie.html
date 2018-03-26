@@ -8,15 +8,18 @@
     <link rel="stylesheet" type="text/css" href="fonts/nunito.css" />
     <link rel="stylesheet" type="text/css" href="frameworks/bootstrap3/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script type="text/javascript" src="frameworks/sprites/sprites.js"></script>
     <script type="text/javascript" src="frameworks/jquery/jquery.js"></script>
     <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="frameworks/sprites/sprites.js"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
     <title>Vytvorenie zadania</title>
 
 </head>
 <body onresize="location.reload();">
 <script>
+    var imageMaxHeight = 0;
+    var imageMaxWidth = 0;
+
     var imageList = [];
     $(document).ready(function () {
         setTimeout(function () {
@@ -26,7 +29,6 @@
         $.ajax({
             url: 'images',
             success: function(data) {
-                console.log(data);
                 $(data).find('a').each(function () {
                     if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
                         imageList.push($(this).attr('href'));
@@ -43,26 +45,45 @@
     var obrazky = [];
     var zadanie = [];
 
-    function onDragDrop(sprite) {
-        var over = sprite.findOverlapped(zadanie);
-        sprite.placeAt(over);
-    }
-
     function drawImages(imageList) {
+        console.table(imageList);
+
+        var aktivita = new Activity("canvas", true);
+
+        aktivita.onDragDrop = function (sprite) {
+            var over = sprite.findOverlapped(zadanie);
+            sprite.placeAt(over);
+        };
+
+        for (var i = 0; i < imageList.length; i++) {
+            obrazky[i] = new Sprite(aktivita, 'images/' + imageList[i], 0, 0, dragSprite);
+            zadanie[i] = new Sprite(aktivita, 'images/prazdne.png', 0, 0);
+        }
+
+        var maxImageHeight = 0;
+        var maxImageWidth  = 0;
+
+        for(var i = 0; i < imageList.length; i++){
+            if(obrazky[i].image.naturalWidth > maxImageWidth) maxImageWidth = obrazky[i].image.naturalWidth;
+            if(obrazky[i].image.naturalHeight > maxImageHeight) maxImageHeight = obrazky[i].image.naturalHeight;
+        }
+        if(zadanie[0].image.naturalHeight > maxImageHeight) maxImageHeight = zadanie[0].image.naturalHeight;
+        if(zadanie[0].image.naturalWidth > maxImageWidth) maxImageWidth = zadanie[0].image.naturalWidth;
+
         var y = 1;
         var x = 0;
         var canvasWidth = $("#canvas").width();
-        var perLine = Math.floor(canvasWidth/100)
+        var perLine = Math.floor(canvasWidth/maxImageWidth);
         var totalLines = Math.ceil(imageList.length/perLine) * 2;
 
-        document.getElementById("canvas").height = totalLines * 100;
+        document.getElementById("canvas").height = totalLines * maxImageHeight;
 
         for (var i = 0; i < imageList.length; i++) {
-            if ((100 + x * 100) > canvasWidth) {
+            if ((maxImageWidth + x * maxImageWidth) > canvasWidth) {
               y++;
               x = 0;
             }
-            obrazky[i] = new Sprite('images/' + imageList[i], 50 + x * 100, y * 100 - 50, dragSprite);
+            obrazky[i].setHome(maxImageWidth / 2 + x * maxImageWidth, y * maxImageHeight - maxImageHeight / 2);
             obrazky[i].kind = imageList[i];
             x += 1;
         }
@@ -70,11 +91,11 @@
         x = 0;
         console.log(y);
         for (var i = 0; i < imageList.length; i++) {
-          if ((100 + x * 100) > canvasWidth) {
+          if ((maxImageWidth + x * maxImageWidth) > canvasWidth) {
             y++;
             x = 0;
           }
-          zadanie[i] = new Sprite('images/prazdne.png', 50 + x * 100, y * 100 - 50);
+          zadanie[i].setHome(maxImageWidth / 2 + x * maxImageWidth, y * maxImageHeight - maxImageHeight / 2);
           x += 1;
         }
     }
