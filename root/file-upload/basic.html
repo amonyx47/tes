@@ -9,21 +9,40 @@
     <link rel="stylesheet" type="text/css" href="../fonts/nunito.css" />
     <link rel="stylesheet" type="text/css" href="../frameworks/bootstrap3/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <script type="text/javascript" src="../frameworks/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../frameworks/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="../frameworks/bootstrap3/js/bootstrap.min.js"></script>
     <script src="js/vendor/jquery.ui.widget.js"></script>
     <script src="js/jquery.iframe-transport.js"></script>
     <script src="js/jquery.fileupload.js"></script>
     <link rel="stylesheet" href="css/jquery.fileupload.css">
+    <link rel="stylesheet" href="../css/styleFileTree.css">
+    <link rel="stylesheet" href="../frameworks/jstree/themes/default/style.css">
+    <script type="text/javascript" src="../frameworks/jstree/jstree.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <h1 class="col-lg-12 text-center nunito"><a href="../index.html">Nahrávanie obrázkov</a></h1>
     </div>
+    <div class="col-lg-6"  style="border-right: double;">
+    <blockquote>
+        <p>Zvoľte cieľový priečinok (alebo rodiča budúceho priečinku).</p>
+    </blockquote>
+    <div class="row" id="jstree"></div>
     <div class="row">
+        <form id="formNewFolder" class="form-inline">
+            <div class="form-group">
+                <label for="createNodeText">Nový priečinok:</label>
+                <input class="form-control" type="text" name="newdir" id="createNodeText" placeholder="Názov nového priečinku..."/>
+                <input class="btn btn-primary" type="submit" value="Vytvoriť" name="newdirsubmit" id="createNode"/>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <div class="col-lg-6">
         <blockquote>
-            <p>Kliknutím nižšie môžete vybrať obrázky, ktoré sa majú nahrať na server (môžete označiť aj viacero obrázkov naraz).</p>
+            <p>Kliknutím (alebo potiahnutím z priečinku) nižšie môžete vybrať obrázky, ktoré sa majú nahrať na server (môžete označiť aj viacero obrázkov naraz).</p>
         </blockquote>
         <span class="btn btn-success fileinput-button">
             <i class="glyphicon glyphicon-plus"></i>
@@ -39,32 +58,100 @@
         </div>
         <div id="files" class="files"></div>
         <br>
-
-    </div>
 </div>
+    <div class="col-lg-6">
 
 <script>
-$(function () {
-    'use strict';
-    var url = 'server/php/';
-    $('#fileupload').fileupload({
-        url: url,
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                $('<p/>').text(file.name).appendTo('#files');
+
+    var path = "";
+
+    $(document).ready(function() {
+
+        $("#formNewFolder").submit(function(e) {
+            e.preventDefault();
+        });
+
+        $("#createNode").click(function(){
+            console.log("clicked on createNode button");
+            console.log("newdir path value: " + document.getElementsByName("newdir")[0].value);
+
+            $.post({ url: 'createFolder.php',
+                data:  {
+                    foldername : path + "/" + document.getElementById("createNodeText").value
+                },
+                success: function(data) {
+                    $('#jstree').jstree("refresh");
+                    console.log("dir created: " + path + "/" + document.getElementById("createNodeText").value);
+                }
             });
+
+        });
+    });
+
+
+    $('#jstree').jstree({
+        'core' : {
+            "check_callback" : true,
+            'data' : {
+                "url" : "tree.php",
+                'data' : function (node) {
+                    return { 'id' : node.id };
+                }
+            },
+            "themes" : {
+                "variant" : "large"
+            }
         },
-        progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress .progress-bar').css(
-                'width',
-                progress + '%'
-            );
+        'types' : {
+          "folder" : {
+              "icon" : ""
+          },
+            "default" : {
+                "icon" : "glyphicon glyphicon-file"
+            }
+        },
+
+        "plugins" : [ "wholerow", "dnd", "search", "types", "state" ]
+    });
+
+    $('#jstree').on("changed.jstree", function (e, data) {
+        if (data.node != null) {
+            path = data.instance.get_path(data.node, '/');
+            console.log('Selected: ' + path);
+            $.get({ url: 'savesession.php',
+                data:  {
+                    path : "../../" + path + "/"
+                },
+                success: function(data) {
+                    console.log("session saved");
+                }
+            });
         }
-    }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
-});
+    });
+
+    $(function () {
+        'use strict';
+        var url = 'server/php/';
+        $('#fileupload').fileupload({
+            url: url,
+            dataType: 'json',
+            done: function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').addClass("alert alert-success").text(file.name + " saved -> " + '../../' +  path + "/").appendTo('#files');
+                });
+                $('#jstree').jstree("refresh");
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .progress-bar').css(
+                    'width',
+                    progress + '%'
+                );
+            }
+        }).prop('disabled', !$.support.fileInput)
+            .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    });
+
 </script>
 </body>
 </html>

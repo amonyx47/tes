@@ -12,31 +12,18 @@
     <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="frameworks/sprites/sprites.js"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
+    <link rel="stylesheet" href="frameworks/jstree/themes/default/style.css">
+    <script type="text/javascript" src="frameworks/jstree/jstree.js"></script>
     <title>Vytvorenie zadania</title>
 
 </head>
 <body onresize="location.reload();">
 <script>
-    var imageMaxHeight = 0;
-    var imageMaxWidth = 0;
 
-    var imageList = [];
     $(document).ready(function () {
         setTimeout(function () {
             $('div').removeClass("ui-page-theme-a");
         }, 1);
-
-        $.ajax({
-            url: 'images',
-            success: function(data) {
-                $(data).find('a').each(function () {
-                    if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
-                        imageList.push($(this).attr('href'));
-                    }
-                });
-                drawImages(imageList);
-            }
-        });
     });
 </script>
 
@@ -45,10 +32,16 @@
     var obrazky = [];
     var zadanie = [];
 
+    var path = "";
+
+    var aktivita;
+
+    var imageList = [];
+
     function drawImages(imageList) {
         console.table(imageList);
 
-        var aktivita = new Activity("canvas", true);
+        aktivita = new Activity("canvas", true);
 
         aktivita.onDragDrop = function (sprite) {
             var over = sprite.findOverlapped(zadanie);
@@ -56,8 +49,8 @@
         };
 
         for (var i = 0; i < imageList.length; i++) {
-            obrazky[i] = new Sprite(aktivita, 'images/' + imageList[i], 0, 0, dragSprite);
-            zadanie[i] = new Sprite(aktivita, 'images/prazdne.png', 0, 0);
+            obrazky[i] = new Sprite(aktivita, 'file-upload/' + path + "/" + imageList[i], 0, 0, dragSprite);
+            zadanie[i] = new Sprite(aktivita, 'file-upload/' + path + "/" + 'prazdne.png', 0, 0);
         }
 
         var maxImageHeight = 0;
@@ -104,26 +97,85 @@
         document.getElementById("comment").setAttribute("innerText", "");
     }
 
+    $(document).ready(function () {
+        $('#jstree').jstree({
+            'core' : {
+                "check_callback" : true,
+                'data' : {
+                    "url" : "tree.php",
+                    'data' : function (node) {
+                        return { 'id' : node.id };
+                    }
+                },
+                "themes" : {
+                    "variant" : "large"
+                }
+            },
+            'types' : {
+                "folder" : {
+                    "icon" : ""
+                },
+                "default" : {
+                    "icon" : "glyphicon glyphicon-file"
+                }
+            },
+
+            "plugins" : [ "wholerow", "dnd", "search", "types"]
+        });
+
+        $('#jstree').on("changed.jstree", function (e, data) {
+            if (data.node != null) {
+                path = data.instance.get_path(data.node, '/');
+                console.log('Selected: ' + path);
+                imageList = [];
+                $.ajax({
+                    url: 'file-upload/' + path + "/",
+                    success: function(data) {
+                        $(data).find('a').each(function () {
+                            if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
+                                imageList.push($(this).attr('href'));
+                            }
+                        });
+                        drawImages(imageList);
+                    }
+                });
+            }
+        });
+
+
+    });
+
+
+
+
 </script>
 
-<div class="container" data-role="page">
-    <div class="row">
-        <h1 class="col-lg-12 text-center nunito"><a href="index">Vytvorenie zadania</a></h1>
-        <h2>Vytvorte zadanie</h2>
-            <p>Názov zadania: <input type="text" id="fileName"></p>
-            <p>Popis zadania: <br><textarea rows="4" cols="50" name="comment" id="comment"></textarea></p>
-            <form action="">
-                <input type="radio" name="typ" value="tahanie" id ="tahanie" checked /><label for="tahanie">&nbsp;ťahanie</label><br />
-                <input type="radio" name="typ" value="vymena" id="vymena" /><label for="vymena">&nbsp;výmena</label><br />
-                <input type="radio" name="typ" value="susedne" id="susedne" /><label for="susedne">&nbsp;výmena (len susedné)</label><br />
-            </form>
+<div class="container">
+        <h1 class="col-lg-12 text-center nunito" id="vytvorenie_zadania"><a href="index">Vytvorenie zadania</a></h1>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 >Vytvorte zadanie</h2>
+                <form action="" id="creation_form">
+                <p>Názov zadania: <input type="text" id="fileName"/></p>
+                <p>Popis zadania: <br><textarea rows="4" cols="50" name="comment" id="comment"></textarea></p>
+
+                    <input type="radio" name="typ" value="tahanie" id ="tahanie" checked /><label for="tahanie">&nbsp;ťahanie</label><br />
+                    <input type="radio" name="typ" value="vymena" id="vymena" /><label for="vymena">&nbsp;výmena</label><br />
+                    <input type="radio" name="typ" value="susedne" id="susedne" /><label for="susedne">&nbsp;výmena (len susedné)</label><br />
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h2>Načítať priečinok</h2>
+                <div id="jstree"></div>
+            </div>
+        </div>
+        <div class="row">
             <div id="zadanie">
                 <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas>
             </div>
-            <a class="btn btn-primary btn-success" href="#" onclick="saveAssignment(); return;">Ulož zadanie</a>
+            <a class="btn btn-primary btn-success" href="#" onclick="saveAssignment(path); return;">Ulož zadanie</a>
             <a class="btn btn-primary" href="ucitel">Späť</a>
-    </div>
-
+        </div>
 </div>
 </body>
 </html>

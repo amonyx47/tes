@@ -32,7 +32,7 @@ function getTest(testName) {
     dataType: "json",
     success: function(data) {
         $('div.container').remove();
-        $('body').append('<div class="container"><div class="row"><h1 class="col-lg-12 text-center nunito"><a href="index" class="btn btn-link" style="text-decoration: none; font-size: 1em;">Žiacky mód</a></h1></div> <div class="row"> <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas> </div></div>');
+        $('body').append('<div class="container"><div class="row"><h1 class="col-lg-12 text-center nunito"><a href="index" class="btn btn-link" style="text-decoration: none; font-size: 1em;">Žiacky mód</a></h1></div> <div class="row"  id="ziak_test"> <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas> </div></div>');
         maxAssignmentIndex = data.assignments.length - 1;
         getAssignment(data.assignments[currentAssignmentIndex].name);
     }
@@ -70,7 +70,7 @@ function shuffle(array) {
 
 function drawAssignment(test){
 
-    var cesta = "images/";
+    var cesta = "file-upload/" + test.path + "/";
     var cards = [];
 
     currentAssignmentSolution = test.cards.slice();
@@ -238,6 +238,7 @@ function drawAssignment(test){
         if(aktivita.sprites[0].image.naturalHeight > maxImageHeight) maxImageHeight = aktivita.sprites[0].image.naturalHeight;
         if(aktivita.sprites[0].image.naturalWidth > maxImageWidth) maxImageWidth = aktivita.sprites[0].image.naturalWidth;
 
+        console.log("maxwidth " + maxImageWidth + " maxheight " + maxImageHeight);
 
         var canvasWidth = $("#canvas").width();
         var perLine = Math.floor(canvasWidth/maxImageWidth);
@@ -300,6 +301,7 @@ function drawAssignment(test){
         if(aktivita.sprites[0].image.naturalHeight > maxImageHeight) maxImageHeight = aktivita.sprites[0].image.naturalHeight;
         if(aktivita.sprites[0].image.naturalWidth > maxImageWidth) maxImageWidth = aktivita.sprites[0].image.naturalWidth;
 
+        console.log("maxwidth " + maxImageWidth + " maxheight " + maxImageHeight);
 
         var canvasWidth = $("#canvas").width();
         var perLine = Math.floor(canvasWidth/maxImageWidth);
@@ -393,21 +395,25 @@ function checkSolution() {
     console.log(currentAssignmentSolution);
 
     if (arraysEqual(proposedSolution, currentAssignmentSolution)) {
-    alert("Gratulujem, riešenie je správne!");
+    $('<div class="alert alert-success"><strong>Gratulujem, riešenie je správne!</strong></div>').insertBefore('#ziak_test').delay(3000).fadeOut(function () {
+        $(this).remove();
+    });
   } else {
-    alert("Bohužiaľ, riešenie je nesprávne. Skús to znova.");
+        $('<div class="alert alert-danger"><strong>Bohužiaľ, riešenie je nesprávne. Skús to znova.</strong></div>').insertBefore('#ziak_test').delay(3000).fadeOut(function () {
+            $(this).remove();
+        });
   }
 };
 
-function saveAssignment() {
+function saveAssignment(path) {
   var fileName = document.getElementById('fileName').value;
   if (fileName.trim() == '') {
-    alert('Nezadali ste meno súboru!');
+      $('#fileName').css( {"box-shadow": "0 0 3px #CC0000", "margin" : "10px"});
     return;
   }
   var comment = document.getElementById('comment').value;
   if (comment.trim() == '') {
-    alert('Nezadali ste komentár k zadaniu!');
+      $('#comment').css( {"box-shadow": "0 0 3px #CC0000", "margin" : "10px"});
     return;
   }
 
@@ -423,9 +429,10 @@ function saveAssignment() {
   var result = Object();
 
   result.id = +new Date();
-  result.name = fileName;
-  result.text = comment;
+  result.name = fileName.trim();
+  result.text = comment.trim();
   result.type = type;
+  result.path = path.trim();
 
   var order = [];
 
@@ -435,27 +442,32 @@ function saveAssignment() {
     }
   }
   if (order.length < 1) {
-    alert('Nevybrali ste žiadne obrázky!');
+      $('#jstree').css( {"box-shadow": "0 0 3px #CC0000", "margin" : "10px"});
     return;
   }
   result.cards = order;
-  saveToServer(result, fileName, 'assignments/');
-  alert('Zadanie úspešne uložené');
-  location.reload();
+  saveToServer(result, fileName, 'assignments/', '#vytvorenie_zadania');
 };
 
-function saveToServer(data, file, path) {
-  $.post('save.php', {
-    json: JSON.stringify(data),
-    fileName: file,
-    path: path
-  });
+function saveToServer(data, file, path, id) {
+    $.post('save.php', {
+        json: JSON.stringify(data),
+        fileName: file,
+        path: path,
+        success: function(data) {
+            $('<div class="alert alert-success"><strong>Test úspešne uložený!</strong></div>').insertBefore(id).delay(3000).fadeOut(function () {
+        $(this).remove();
+        location.reload();
+        $('#creation_form')[0].reset();
+    });
+}
+})
 };
 
 function saveTest() {
   var fileName = document.getElementById('fileName').value;
   if (fileName == '') {
-    alert('Nezadali ste meno súboru!');
+      $('#fileName').css( {"box-shadow": "0 0 3px #CC0000", "margin" : "10px"});
     return;
   }
 
@@ -473,7 +485,5 @@ function saveTest() {
     assgnments.push(tmp);
   }
   result.assignments = assgnments;
-  saveToServer(result, fileName, 'tests/');
-  alert('Test úspešne uložený');
-  location.reload();
+  saveToServer(result, fileName, 'tests/' ,'#vytvorenie_testu');
 };

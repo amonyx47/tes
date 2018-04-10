@@ -24,7 +24,7 @@
 </script>
 <div class="container" data-role="page">
     <div class="row">
-        <h1 class="col-lg-12 text-center nunito"><a href="index">Vytvorenie testu</a></h1>
+        <h1 class="col-lg-12 text-center nunito" id="vytvorenie_testu"><a href="index">Vytvorenie testu</a></h1>
     </div>
     <div class="row ui-content" role="main">
         <div class="col-lg-1 text-center"></div>
@@ -34,10 +34,12 @@
             <select id='test' multiple='multiple'>
             </select>
             <br>
+            <form action="" id="creation_form">
             <p>
                 Názov testu:
                 <input type="text" id="fileName">
             </p>
+            </form>
             <a type="button" class="btn btn-success nunito" href="#" onclick="saveTest(); return;">Ulož test</a>
             <a class="btn btn-primary" href="ucitel">Späť</a>
         </div>
