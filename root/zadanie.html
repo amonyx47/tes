@@ -38,7 +38,12 @@
 
     var imageList = [];
 
-    function drawImages(imageList) {
+
+    function drawImages(imageList, maxImageHeight, maxImageWidth) {
+
+        var canvas = document.getElementById("canvas");
+        console.log(canvas);
+
         console.table(imageList);
 
         aktivita = new Activity("canvas", true);
@@ -52,9 +57,6 @@
             obrazky[i] = new Sprite(aktivita, 'file-upload/' + path + "/" + imageList[i], 0, 0, dragSprite);
             zadanie[i] = new Sprite(aktivita, 'file-upload/' + path + "/" + 'prazdne.png', 0, 0);
         }
-
-        var maxImageHeight = 0;
-        var maxImageWidth  = 0;
 
         for(var i = 0; i < imageList.length; i++){
             if(obrazky[i].image.naturalWidth > maxImageWidth) maxImageWidth = obrazky[i].image.naturalWidth;
@@ -82,7 +84,7 @@
         }
         y++;
         x = 0;
-        console.log(y);
+
         for (var i = 0; i < imageList.length; i++) {
           if ((maxImageWidth + x * maxImageWidth) > canvasWidth) {
             y++;
@@ -134,9 +136,35 @@
                         $(data).find('a').each(function () {
                             if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
                                 imageList.push($(this).attr('href'));
+
                             }
                         });
-                        drawImages(imageList);
+
+                        var img = new Image();
+
+                        img.onload = function(){
+
+                            console.log("IN JSTREE CHANGED ");
+                            console.log(img);
+                            console.log(img.url);
+                            console.log("W:" + img.naturalWidth + " H:" + img.naturalHeight);
+
+                            //drawAssignment(data, img.naturalHeight, img.naturalWidth);
+                            drawImages(imageList, img.naturalHeight, img.naturalWidth);
+                        };
+
+                        var pathImg = "file-upload/" + path + "/";
+
+                        var maxW = 0;
+                        var maxH = 0;
+                        for(var i = 0; i < imageList.length; i++){
+                            img.src = pathImg + imageList[i];
+                            if(img.naturalHeight > maxH) maxH = img.naturalHeight;
+                            if(img.naturalWidth > maxW) maxW = img.naturalWidth;
+                        }
+                        console.log("MAX DIMENSIONS: ");
+                        console.log("W: " + maxW);
+                        console.log("H: " + maxH);
                     }
                 });
             }

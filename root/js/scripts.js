@@ -26,6 +26,7 @@ function getTest(testName) {
   if (testName == null) {
     testName = currentTest;
   }
+
   $.ajax({
     url: "tests/" + testName + ".json",
     type: "GET",
@@ -45,7 +46,32 @@ function getAssignment(assignment) {
     type: "GET",
     dataType: "json",
     success: function(data) {
-        drawAssignment(data);
+
+        var img = new Image();
+
+        img.onload = function(){
+
+            console.log("IN GET ASSIGNEMENT ");
+            console.log(img);
+            console.log(img.url);
+            console.log("W:" + img.naturalWidth + " H:" + img.naturalHeight);
+
+            drawAssignment(data, img.naturalHeight, img.naturalWidth);
+        };
+
+        var path = "file-upload/" + data.path + "/";
+
+        var maxW = 0;
+        var maxH = 0;
+        for(var i = 0; i < data.cards.length; i++){
+            img.src = path + data.cards[i];
+            if(img.naturalHeight > maxH) maxH = img.naturalHeight;
+            if(img.naturalWidth > maxW) maxW = img.naturalWidth;
+        }
+        console.log("MAX DIMENSIONS: ");
+        console.log("W: " + maxW);
+        console.log("H: " + maxH);
+
     }
   });
 }
@@ -68,7 +94,7 @@ function shuffle(array) {
   return array;
 }
 
-function drawAssignment(test){
+function drawAssignment(test, maxImageHeight, maxImageWidth){
 
     var cesta = "file-upload/" + test.path + "/";
     var cards = [];
@@ -166,8 +192,7 @@ function drawAssignment(test){
         }
 
 
-        var maxImageHeight = 0;
-        var maxImageWidth  = 0;
+
 
         for(var i = aktivita.sprites.length / 2; i < aktivita.sprites.length; i++){
             if(aktivita.sprites[i].image.naturalWidth > maxImageWidth) {
@@ -180,7 +205,6 @@ function drawAssignment(test){
         if(aktivita.sprites[0].image.naturalHeight > maxImageHeight) maxImageHeight = aktivita.sprites[0].image.naturalHeight;
         if(aktivita.sprites[0].image.naturalWidth > maxImageWidth) maxImageWidth = aktivita.sprites[0].image.naturalWidth;
 
-
         console.log("maxwidth " + maxImageWidth + " maxheight " + maxImageHeight);
         var canvasWidth = $("#canvas").width();
         var perLine = Math.floor(canvasWidth/maxImageWidth);
@@ -189,8 +213,8 @@ function drawAssignment(test){
 
         y = 51; x = 51;
         for (var i = 0; i < test.cards.length; i++) {
-            ciele[i].setHome(x + i * maxImageWidth, y);
-            cards[i].setHome(x + i * maxImageWidth, y);
+            ciele[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight / 2);
+            cards[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight);
         }
 
         console.table(aktivita.sprites);
@@ -228,8 +252,7 @@ function drawAssignment(test){
         }
 
 
-        var maxImageHeight = 0;
-        var maxImageWidth  = 0;
+
 
         for(var i = aktivita.sprites.length / 2; i < aktivita.sprites.length; i++){
             if(aktivita.sprites[i].image.naturalWidth > maxImageWidth) maxImageWidth = aktivita.sprites[i].image.naturalWidth;
@@ -247,8 +270,8 @@ function drawAssignment(test){
 
         y = 51; x = 51;
         for (var i = 0; i < test.cards.length; i++) {
-            ciele[i].setHome(x + i * maxImageWidth, y + maxImageHeight);
-            cards[i].setHome(x + i * maxImageWidth, y);
+            ciele[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight / 2 + maxImageHeight);
+            cards[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight / 2);
 
         }
 
@@ -291,8 +314,7 @@ function drawAssignment(test){
         }
 
 
-        var maxImageHeight = 0;
-        var maxImageWidth  = 0;
+
 
         for(var i = aktivita.sprites.length / 2; i < aktivita.sprites.length; i++){
             if(aktivita.sprites[i].image.naturalWidth > maxImageWidth) maxImageWidth = aktivita.sprites[i].image.naturalWidth;
@@ -310,12 +332,14 @@ function drawAssignment(test){
 
         y = 51; x = 51;
         for (var i = 0; i < test.cards.length; i++) {
-            ciele[i].setHome(x + i * maxImageWidth, y);
-            cards[i].setHome(x + i * maxImageWidth, y);
+            ciele[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight);
+            cards[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight);
 
         }
 
     }
+
+    console.log("canvasWidth: " + $("#canvas").width() + " canvasHeight: " + $("#canvas").height());
 
     var bottom = $('<div />', {
         "id": "bottom",

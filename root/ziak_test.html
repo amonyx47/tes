@@ -18,9 +18,9 @@
 <body>
   <script type="text/javascript" src="frameworks/dragula/dragula.js"></script>
 <script>
-    $(document).ready(function () {
+    $(window).on("load", function () {
       getQueryVariable("name");
-      getTest(currentTest)
+      getTest(currentTest);
     });
 </script>
     <div class="container">
