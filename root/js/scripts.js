@@ -159,6 +159,14 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
 
     $("div.container div:eq(0)").after(row);
 
+    if(maxImageWidth < 50){
+        maxImageWidth = 100;
+    }
+
+    if(maxImageHeight < 50){
+        maxImageHeight = 100;
+    }
+
     if (test.type == 'exchange') {
         aktivita = new Activity("canvas", true);
         var ciele = [];
@@ -192,7 +200,7 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
         }
 
 
-
+        console.table(aktivita.sprites);
 
         for(var i = aktivita.sprites.length / 2; i < aktivita.sprites.length; i++){
             if(aktivita.sprites[i].image.naturalWidth > maxImageWidth) {
@@ -213,7 +221,7 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
 
         y = 51; x = 51;
         for (var i = 0; i < test.cards.length; i++) {
-            ciele[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight / 2);
+            ciele[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight);
             cards[i].setHome(maxImageWidth / 2 + i * maxImageWidth, maxImageHeight);
         }
 
@@ -275,6 +283,7 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
 
         }
 
+        console.table(aktivita.sprites);
     }
 
     if (test.type == 'restricted') {
