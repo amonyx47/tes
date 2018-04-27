@@ -18,6 +18,10 @@
 <body>
   <script type="text/javascript" src="frameworks/dragula/dragula.js"></script>
 <script>
+    $(window).ready(function() {
+        $('#loading').hide();
+    });
+
     $(window).on("load", function () {
       getQueryVariable("name");
       getTest(currentTest);
@@ -27,6 +31,7 @@
         <div class="row">
             <h1 class="col-lg-12 text-center nunito" ><a href="index" class="btn btn-link" style="text-decoration: none; font-size: 1em;">Žiacky mód</a></h1>
         </div>
+        <div class="row" id="loading"></div>
         <div class="row" id="ziak_test">
             <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas>
         </div>

@@ -159,11 +159,11 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
 
     $("div.container div:eq(0)").after(row);
 
-    if(maxImageWidth < 50){
+    if(maxImageWidth < 51){
         maxImageWidth = 100;
     }
 
-    if(maxImageHeight < 50){
+    if(maxImageHeight < 51){
         maxImageHeight = 100;
     }
 
