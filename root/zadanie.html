@@ -135,8 +135,9 @@
                     success: function(data) {
                         $(data).find('a').each(function () {
                             if ($(this).attr('href').indexOf('/') == -1 && $(this).attr('href').indexOf('?') == -1) {
-                                imageList.push($(this).attr('href'));
-
+                                if(!$(this).attr('href').includes('prazdne')) {
+                                    imageList.push($(this).attr('href'));
+                                }
                             }
                         });
 

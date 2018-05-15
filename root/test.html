@@ -31,13 +31,14 @@
         <div class="col-lg-3 text-center">
         </div>
         <div class="col-lg-4 text-center">
-            <select id='test' multiple='multiple'>
+            <select id='test' multiple='multiple' name="tests[]">
             </select>
             <br>
             <form action="" id="creation_form">
             <p>
                 Názov testu:
-                <input type="text" id="fileName">
+                <input type="hidden" name="multiple_value" id="multiple_value"  />
+                <input type="text" name="submit" id="fileName">
             </p>
             </form>
             <a type="button" class="btn btn-success nunito" href="#" onclick="saveTest(); return;">Ulož test</a>
@@ -63,13 +64,12 @@
             showSelect();
         }
     });
-</script>
-<script>
-    $('#test').multiSelect();
+
+    $('#test').multiSelect({keepOrder:true});
 
     function showSelect() {
         for (var i = 0; i < assignments.length; i++) {
-            $('#test').multiSelect('addOption', {value: assignments[i], text: assignments[i].split('.')[0], index: i});
+            $('#test').multiSelect('addOption', {value: assignments[i], text: assignments[i].split('.')[0]});
         }
     }
 </script>

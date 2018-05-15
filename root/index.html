@@ -11,31 +11,78 @@
     <script type="text/javascript" src="frameworks/jquery/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="frameworks/bootstrap3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
+    <script type="text/javascript" src="frameworks/hotkeys/hotkeys.js"></script>
     <title>Usporaduváčik</title>
 </head>
 <body>
 <script>
     $(document).ready(function () {
+
+        var counter = 0;
+
         setTimeout(function () {
             $('div').removeClass("ui-page-theme-a");
         }, 1);
+
+        hotkeys('ctrl+i', function(event,handler) {
+            event.preventDefault();
+            switch(handler.key){
+                case "ctrl+i":
+                    counter++;
+                    if(counter % 2 == 0){
+                        $('div.container').html(innerContainerHtmlNoTeacherMode);
+                    } else {
+                        $('div.container').html(innerContainerHtmlWithTeacherMode);
+                    }
+                    break;
+            }
+        });
+
     });
+
+    var innerContainerHtmlWithTeacherMode = '<div class="container" data-role="page">\n' +
+        '    <div class="row main-page-header">\n' +
+        '        <h1 class="col-lg-12 text-center bowlby"><a href="#">Usporaduváčik</a></h1>\n' +
+        '    </div>\n' +
+        '    <div class="row main-page-container ui-content" role="main">\n' +
+        '        <div class="col-lg-1 text-center"></div>\n' +
+        '        <div class="col-lg-3 text-center">\n' +
+        '            <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" data-transition="flow" href="ziak">Žiacky mód</a>\n' +
+        '        </div>\n' +
+        '        <div class="col-lg-4 text-center"></div>\n' +
+        '        <div id="ucitel" class="col-lg-3 text-center">\n' +
+        '            <a type="button" class="btn btn-lg btn-warning btn-block btn-huge nunito" data-transition="flow" href="ucitel">Učiteľský mód</a>\n' +
+        '        </div>\n' +
+        '        <div class="col-lg-1 text-center"></div>\n' +
+        '    </div>\n' +
+        '</div>';
+
+    var innerContainerHtmlNoTeacherMode = '<div class="container" data-role="page">\n' +
+        '    <div class="row main-page-header">\n' +
+        '        <h1 class="col-lg-12 text-center bowlby"><a href="#">Usporaduváčik</a></h1>\n' +
+        '    </div>\n' +
+        '    <div class="row main-page-container ui-content" role="main">\n' +
+        '        <div class="col-lg-4 text-center"></div>\n' +
+        '        <div class="col-lg-4 text-center">\n' +
+        '            <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" data-transition="flow" href="ziak">Žiacky mód</a>\n' +
+        '        </div>\n' +
+        '        <div class="col-lg-4 text-center"></div>\n' +
+        '    </div>\n' +
+        '</div>';
+
+
 </script>
 <div class="container" data-role="page">
-    <div class="row main-page-header">
-        <h1 class="col-lg-12 text-center bowlby"><a href="#">Usporaduváčik</a></h1>
+        <div class="row main-page-header">
+                <h1 class="col-lg-12 text-center bowlby"><a href="#">Usporaduváčik</a></h1>
+            </div>
+        <div class="row main-page-container ui-content" role="main">
+                <div class="col-lg-4 text-center"></div>
+                <div class="col-lg-4 text-center">
+                        <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" data-transition="flow" href="ziak">Žiacky mód</a>
+                    </div>
+                <div class="col-lg-4 text-center"></div>
+            </div>
     </div>
-    <div class="row main-page-container ui-content" role="main">
-        <div class="col-lg-1 text-center"></div>
-        <div class="col-lg-3 text-center">
-            <a type="button" class="btn btn-lg btn-success btn-block btn-huge nunito" data-transition="flow" href="ziak">Žiacky mód</a>
-        </div>
-        <div class="col-lg-4 text-center"></div>
-        <div class="col-lg-3 text-center">
-            <a type="button" class="btn btn-lg btn-warning btn-block btn-huge nunito" data-transition="flow" href="ucitel">Učiteľský mód</a>
-        </div>
-        <div class="col-lg-1 text-center"></div>
-    </div>
-</div>
 </body>
 </html>

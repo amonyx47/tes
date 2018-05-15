@@ -33,7 +33,7 @@ function getTest(testName) {
     dataType: "json",
     success: function(data) {
         $('div.container').remove();
-        $('body').append('<div class="container"><div class="row"><h1 class="col-lg-12 text-center nunito"><a href="index" class="btn btn-link" style="text-decoration: none; font-size: 1em;">Žiacky mód</a></h1></div> <div class="row"  id="ziak_test"> <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas> </div></div>');
+        $('body').append('<div class="container"><div class="row"><h1 class="col-lg-12 text-center nunito"><a href="index" class="btn btn-link" style="text-decoration: none; font-size: 1em;">Žiacky mód</a></h1></div><div class="row"  id="ziak_test"> <canvas id="canvas" style="background: beige; width: 100%; overflow-x: scroll">Váš prehliadač nepodporuje element Canvas</canvas> </div></div>');
         maxAssignmentIndex = data.assignments.length - 1;
         getAssignment(data.assignments[currentAssignmentIndex].name);
     }
@@ -141,7 +141,7 @@ function drawAssignment(test, maxImageHeight, maxImageWidth){
     row.append(header);
 
     var text = $('<h2 />');
-    text.text(test.text);
+    text.html(test.text);
 
     row.append(text);
 
